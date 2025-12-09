@@ -100,6 +100,13 @@
   <version>${spring-security.version}</version> <!-- or omit version to inherit Spring Boot BOM -->
   <scope>test</scope>
 </dependency>
+<!-- PostgreSQL driver -->
+<dependency>
+  <groupId>org.postgresql</groupId>
+  <artifactId>postgresql</artifactId>
+  <version>42.6.0</version>
+</dependency>
+
 
 
         <!-- (Optional) OpenAPI / Swagger UI for later if you want docs -->

@@ -2,8 +2,8 @@
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# copy maven files first for cache
-COPY pom.xml .
+# copy maven files (cache deps)
+COPY pom.xml ./
 COPY .mvn .mvn
 COPY mvnw mvnw
 RUN mvn -q -N -e -B dependency:go-offline
@@ -17,10 +17,9 @@ FROM eclipse-temurin:17-jre-alpine
 ARG JAR_FILE=/app/target/*.jar
 COPY --from=build /app/target/*.jar /app/app.jar
 
-# prefer an unprivileged user (optional)
+# optional unprivileged user
 RUN addgroup -S jobconnect && adduser -S jobconnect -G jobconnect
 USER jobconnect
 
 EXPOSE 8080
-# use Render's $PORT if provided (we already read it in application.properties)
 ENTRYPOINT ["java","-jar","/app/app.jar"]
