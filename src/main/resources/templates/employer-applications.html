@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Applications - ' + ${job.title}">Applications</title>
+    <link rel="stylesheet" th:href="@{/employer-dashboard.css}">
+</head>
+<body>
+<div class="dashboard-container">
+    <header class="header">
+        <h1 th:text="${job.title}">Job Title</h1>
+        <div class="user-info">
+            <a th:href="@{/employer/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h2>Applications</h2>
+
+        <div th:if="${#lists.isEmpty(applications)}" class="empty-state">
+            <h3>No applications yet</h3>
+            <p>Share your job posting to get more applicants.</p>
+        </div>
+
+        <div th:each="app : ${applications}" class="job-card">
+            <div class="job-header">
+                <div>
+                    <div class="job-title" th:text="${app.seeker.fullName}">Applicant Name</div>
+                    <div class="job-meta">
+                        <span>📅
+                            <span th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy HH:mm')}">
+                                Applied date
+                            </span>
+                        </span>
+                        <span>Status:
+                            <strong th:text="${app.status}">PENDING</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <p><strong>Reason for applying:</strong></p>
+            <p th:text="${app.coverLetter}">Reason text...</p>
+
+            <p style="margin-top:0.75rem;"><strong>Resume:</strong>
+                <a th:href="${app.resumeSummary}" target="_blank"
+                   th:text="${app.resumeSummary}">Resume link</a>
+            </p>
+
+            <div class="job-actions" style="margin-top:1rem;">
+                <form th:action="@{|/employer/applications/${app.id}/status|}" method="post" style="display:inline;">
+                    <input type="hidden" name="status" value="ACCEPTED"/>
+                    <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+                </form>
+
+                <form th:action="@{|/employer/applications/${app.id}/status|}" method="post" style="display:inline;">
+                    <input type="hidden" name="status" value="REJECTED"/>
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                </form>
+
+                <form th:action="@{|/employer/applications/${app.id}/status|}" method="post" style="display:inline;">
+                    <input type="hidden" name="status" value="PENDING"/>
+                    <button type="submit" class="btn btn-secondary btn-sm">Mark Pending</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
